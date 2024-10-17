@@ -1,0 +1,511 @@
+{
+  "version": "36.0.0",
+  "artifacts": {
+    "FoundationWebApp.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "FoundationWebApp.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "FoundationWebApp": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://739275479148/ap-northeast-1",
+      "properties": {
+        "templateFile": "FoundationWebApp.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::739275479148:role/cdk-hnb659fds-deploy-role-739275479148-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::739275479148:role/cdk-hnb659fds-cfn-exec-role-739275479148-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-739275479148-ap-northeast-1/52ca9b8ea0a6cb34c80620cf12a3684f9d59969182d8c915f343454b3a8c02a9.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "FoundationWebApp.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::739275479148:role/cdk-hnb659fds-lookup-role-739275479148-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "FoundationWebApp.assets"
+      ],
+      "metadata": {
+        "/FoundationWebApp": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              }
+            ]
+          }
+        ],
+        "/FoundationWebApp/CMK/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CMK56817A4C"
+          }
+        ],
+        "/FoundationWebApp/CMK/Alias/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CMKAliasFD5A95C9"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpc6B5E6F44"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet1Subnet918289EE"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet1RouteTable8FB3C18A"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet1RouteTableAssociationD13830EA"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet1DefaultRoute80C01FA6"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet1EIP7D5353EC"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet1NATGateway70EEEC07"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet2Subnet9D9E5AFB"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet2RouteTable22886677"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet2RouteTableAssociation2D4CEA06"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet2DefaultRouteDF98F60F"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet2/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet2EIP702A8117"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PublicSubnet2/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPublicSubnet2NATGatewayB9DAAE57"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet1Subnet717BCE48"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet1RouteTable69CC9A73"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet1RouteTableAssociation761725EA"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet1DefaultRouteDE58E6A0"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet2Subnet4313381B"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet2RouteTableAE92CE40"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet2RouteTableAssociation9EFBB61D"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcPrivateSubnet2DefaultRoute5BF16047"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/ProtectedSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/ProtectedSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcProtectedSubnet1RouteTable2C1558E9"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/ProtectedSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcProtectedSubnet1RouteTableAssociation011790AB"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/ProtectedSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcProtectedSubnet2SubnetE110C692"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/ProtectedSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcProtectedSubnet2RouteTableA434E57C"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/ProtectedSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcProtectedSubnet2RouteTableAssociation01AFDB7E"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcIGW21218DAB"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcVPCGW12E561D8"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/FlowLogs/FlowLog": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcFlowLogsFlowLog7DF32A67"
+          }
+        ],
+        "/FoundationWebApp/Networking/Vpc/S3GWEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingVpcS3GWEndpointA935E1AA"
+          }
+        ],
+        "/FoundationWebApp/Networking/Key/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingKey5DCEF7CD"
+          }
+        ],
+        "/FoundationWebApp/Networking/Key/Alias/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingKeyAlias2BF09FC0"
+          }
+        ],
+        "/FoundationWebApp/Networking/FlowLogBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingFlowLogBucket33187957"
+          }
+        ],
+        "/FoundationWebApp/Networking/FlowLogBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingFlowLogBucketPolicy1EE356A6"
+          }
+        ],
+        "/FoundationWebApp/Networking/PublicNacl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPublicNacl8F0D44A5"
+          }
+        ],
+        "/FoundationWebApp/Networking/PublicNacl/DefaultAssociationFoundationWebAppNetworkingVpcPublicSubnet1ADE6F7BD/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPublicNaclDefaultAssociationFoundationWebAppNetworkingVpcPublicSubnet1ADE6F7BD4B0B5740"
+          }
+        ],
+        "/FoundationWebApp/Networking/PublicNacl/DefaultAssociationFoundationWebAppNetworkingVpcPublicSubnet2485A7071/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPublicNaclDefaultAssociationFoundationWebAppNetworkingVpcPublicSubnet2485A70714924F09C"
+          }
+        ],
+        "/FoundationWebApp/Networking/PublicNacl/PublicEgress/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPublicNaclPublicEgress927B5E86"
+          }
+        ],
+        "/FoundationWebApp/Networking/PublicNacl/PublicIngress/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPublicNaclPublicIngressAC30352B"
+          }
+        ],
+        "/FoundationWebApp/Networking/PrivateNacl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPrivateNacl8E602059"
+          }
+        ],
+        "/FoundationWebApp/Networking/PrivateNacl/DefaultAssociationFoundationWebAppNetworkingVpcPrivateSubnet1784D3D61/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPrivateNaclDefaultAssociationFoundationWebAppNetworkingVpcPrivateSubnet1784D3D61CE4FF6E8"
+          }
+        ],
+        "/FoundationWebApp/Networking/PrivateNacl/DefaultAssociationFoundationWebAppNetworkingVpcPrivateSubnet26CFC9EEE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPrivateNaclDefaultAssociationFoundationWebAppNetworkingVpcPrivateSubnet26CFC9EEE08C73694"
+          }
+        ],
+        "/FoundationWebApp/Networking/PrivateNacl/PrivateEgress/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPrivateNaclPrivateEgress8D7BEE42"
+          }
+        ],
+        "/FoundationWebApp/Networking/PrivateNacl/PrivateIngress/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NetworkingPrivateNaclPrivateIngressA5CFFFD6"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AlbSg/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlbSg4F64FD2A"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AlbSg/to FoundationWebAppEc2AppAppSgFA798B8C:80": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlbSgtoFoundationWebAppEc2AppAppSgFA798B8C80B0A7F425"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppSg/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppSgF34C625B"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppSg/from FoundationWebAppEc2AppAlbSg502E2C7C:80": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppSgfromFoundationWebAppEc2AppAlbSg502E2C7C807708FB34"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/Alb/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlb7DEFB31D"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/Alb/AlbListener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlbAlbListenerD30090D8"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/Alb/AlbListener/AppAsgTargetGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlbAlbListenerAppAsgTargetGroup308E1E51"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AlbLogBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlbLogBucket1DE66F6A"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AlbLogBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAlbLogBucketPolicy6C6759B4"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/SsmInstanceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppSsmInstanceRole98A9FB18"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppInstance/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppInstanceInstanceProfileA4F0D336"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppInstance/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppInstance1455355A"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppAsg/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppAsgInstanceProfile6555344A"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppAsg/LaunchConfig": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppAsgLaunchConfig7E072488"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppAsg/ASG": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppAsgASGA1C2034A"
+          }
+        ],
+        "/FoundationWebApp/Ec2App/AppAsg/ScalingPolicykeepSpareCPU/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2AppAppAsgScalingPolicykeepSpareCPUE940C04E"
+          }
+        ],
+        "/FoundationWebApp/SsmParameterValue:--aws--service--ami-amazon-linux-latest--amzn2-ami-hvm-x86_64-gp2:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/FoundationWebApp/Datastore/DbSg/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreDbSg2E466A34"
+          }
+        ],
+        "/FoundationWebApp/Datastore/DbSg/from FoundationWebAppDatastoreDbSg6796B5B1:5432": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreDbSgfromFoundationWebAppDatastoreDbSg6796B5B1543250A0EDA9"
+          }
+        ],
+        "/FoundationWebApp/Datastore/AuroraCluster/Subnets/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreAuroraClusterSubnetsD8325308"
+          }
+        ],
+        "/FoundationWebApp/Datastore/AuroraCluster/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FoundationWebAppDatastoreAuroraClusterSecretD290B3CC3fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/FoundationWebApp/Datastore/AuroraCluster/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreAuroraClusterSecretAttachment3F350821"
+          }
+        ],
+        "/FoundationWebApp/Datastore/AuroraCluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreAuroraCluster2FE23DD5"
+          }
+        ],
+        "/FoundationWebApp/Datastore/AuroraCluster/Instance1": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreAuroraClusterInstance17CC9C737"
+          }
+        ],
+        "/FoundationWebApp/Datastore/AuroraCluster/Instance2": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DatastoreAuroraClusterInstance2FA5EF5D9"
+          }
+        ],
+        "/FoundationWebApp/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/FoundationWebApp/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/FoundationWebApp/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "FoundationWebApp"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

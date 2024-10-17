@@ -8,6 +8,8 @@ import { aws_iam as iam } from "aws-cdk-lib";
 import { aws_kms as kms } from "aws-cdk-lib";
 import { region_info as ri } from "aws-cdk-lib";
 import { aws_autoscaling as autoscaling } from "aws-cdk-lib";
+import { ILoadBalancerV2 } from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import { IAlarm } from "aws-cdk-lib/aws-cloudwatch";
 
 export interface Ec2AppProps {
   vpc: ec2.IVpc;
@@ -16,6 +18,11 @@ export interface Ec2AppProps {
 
 export class Ec2App extends Construct {
   public readonly appServerSecurityGroup: ec2.ISecurityGroup;
+  public readonly dbServerSecurityGroup: ec2.ISecurityGroup;
+  public readonly alb: ILoadBalancerV2;
+  public readonly albFullName: string;
+  public readonly albTargetGroupName: string;
+  public readonly albTargetGroupUnhealthyHostCountAlarm: IAlarm;
 
   constructor(scope: Construct, id: string, props: Ec2AppProps) {
     super(scope, id);
@@ -49,6 +56,8 @@ export class Ec2App extends Construct {
         subnetGroupName: "Public",
       }),
     });
+    this.alb = alb;
+    this.albFullName = alb.loadBalancerFullName;
 
     // ALB Listener - TargetGroup
     const albListener = alb.addListener("AlbListener", {
@@ -144,53 +153,51 @@ export class Ec2App extends Construct {
     }).availabilityZones;
 
     const instanceIdTargets: elbv2targets.InstanceIdTarget[] = new Array(0);
-    for (let i = 0; i < 2; i++) {
-      const instance = new ec2.Instance(this, `AppInstance${i}`, {
-        vpc: props.vpc,
-        availabilityZone: privateAzs[i % privateAzs.length],
-        vpcSubnets: props.vpc.selectSubnets({
-          subnetGroupName: "Private",
-        }),
-        instanceType: ec2.InstanceType.of(
-          ec2.InstanceClass.T3,
-          ec2.InstanceSize.MICRO
-        ),
-        machineImage: new ec2.AmazonLinuxImage({
-          generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
-        }),
-        securityGroup: appSg,
-        role: ssmInstanceRole,
-        userData: userdata,
-        blockDevices: [
-          {
-            deviceName: "/dev/xvda",
-            volume: ec2.BlockDeviceVolume.ebs(10, {
-              encrypted: true,
-            }),
-          },
-        ],
-      });
-      // Tags for AppServers
-      cdk.Tags.of(instance).add("Name", "AppServer" + i, {
-        applyToLaunchedInstances: true,
-      });
-      instanceIdTargets.push(
-        new elbv2targets.InstanceIdTarget(instance.instanceId, 80)
-      );
-    }
+    const instance = new ec2.Instance(this, `AppInstance`, {
+      vpc: props.vpc,
+      availabilityZone: privateAzs[privateAzs.length],
+      vpcSubnets: props.vpc.selectSubnets({
+        subnetGroupName: "Private",
+      }),
+      instanceType: ec2.InstanceType.of(
+        ec2.InstanceClass.T2,
+        ec2.InstanceSize.MICRO
+      ),
+      machineImage: new ec2.AmazonLinuxImage({
+        generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
+      }),
+      securityGroup: appSg,
+      role: ssmInstanceRole,
+      userData: userdata,
+      blockDevices: [
+        {
+          deviceName: "/dev/xvda",
+          volume: ec2.BlockDeviceVolume.ebs(10, {
+            encrypted: true,
+          }),
+        },
+      ],
+    });
+    // Tags for AppServers
+    cdk.Tags.of(instance).add("Name", "AppServer", {
+      applyToLaunchedInstances: true,
+    });
+    instanceIdTargets.push(
+      new elbv2targets.InstanceIdTarget(instance.instanceId, 80)
+    );
 
     // ------------ AppServers (AutoScaling) ---------------
 
     // Auto Scaling Group for AppServers
     const appAsg = new autoscaling.AutoScalingGroup(this, "AppAsg", {
-      minCapacity: 2,
-      maxCapacity: 4,
+      minCapacity: 1,
+      maxCapacity: 1,
       vpc: props.vpc,
       vpcSubnets: props.vpc.selectSubnets({
         subnetGroupName: "Private",
       }),
       instanceType: ec2.InstanceType.of(
-        ec2.InstanceClass.T3,
+        ec2.InstanceClass.T2,
         ec2.InstanceSize.MICRO
       ),
       machineImage: new ec2.AmazonLinuxImage({

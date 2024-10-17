@@ -1,0 +1,20 @@
+{
+  "version": "36.0.0",
+  "files": {
+    "89652e02fd31f5442d783c541487d3d4745b4a256da54135f7e07e6b39470468": {
+      "source": {
+        "path": "Dev-BLEAEc2App.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "739275479148-ap-northeast-1": {
+          "bucketName": "cdk-hnb659fds-assets-739275479148-ap-northeast-1",
+          "objectKey": "89652e02fd31f5442d783c541487d3d4745b4a256da54135f7e07e6b39470468.json",
+          "region": "ap-northeast-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::739275479148:role/cdk-hnb659fds-file-publishing-role-739275479148-ap-northeast-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

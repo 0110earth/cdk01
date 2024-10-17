@@ -1,0 +1,2121 @@
+{
+ "Description": "WebApplication foundation (tag:web-foundation-app)",
+ "Resources": {
+  "CMK56817A4C": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "Description": "BLEA Guest Sample: CMK for Ec2App",
+    "EnableKeyRotation": true,
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::739275479148:root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/CMK/Resource"
+   }
+  },
+  "CMKAliasFD5A95C9": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/DevBLEAEc2App",
+    "TargetKeyId": {
+     "Fn::GetAtt": [
+      "CMK56817A4C",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/CMK/Alias/Resource"
+   }
+  },
+  "NetworkingVpc6B5E6F44": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.100.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/Resource"
+   }
+  },
+  "NetworkingVpcPublicSubnet1Subnet918289EE": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1a",
+    "CidrBlock": "10.100.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1/Subnet"
+   }
+  },
+  "NetworkingVpcPublicSubnet1RouteTable8FB3C18A": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1/RouteTable"
+   }
+  },
+  "NetworkingVpcPublicSubnet1RouteTableAssociationD13830EA": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPublicSubnet1RouteTable8FB3C18A"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPublicSubnet1Subnet918289EE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "NetworkingVpcPublicSubnet1DefaultRoute80C01FA6": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "NetworkingVpcIGW21218DAB"
+    },
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPublicSubnet1RouteTable8FB3C18A"
+    }
+   },
+   "DependsOn": [
+    "NetworkingVpcVPCGW12E561D8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "NetworkingVpcPublicSubnet1EIP7D5353EC": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1/EIP"
+   }
+  },
+  "NetworkingVpcPublicSubnet1NATGateway70EEEC07": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "NetworkingVpcPublicSubnet1EIP7D5353EC",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPublicSubnet1Subnet918289EE"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "NetworkingVpcPublicSubnet1DefaultRoute80C01FA6",
+    "NetworkingVpcPublicSubnet1RouteTableAssociationD13830EA"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet1/NATGateway"
+   }
+  },
+  "NetworkingVpcPublicSubnet2Subnet9D9E5AFB": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1c",
+    "CidrBlock": "10.100.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet2/Subnet"
+   }
+  },
+  "NetworkingVpcPublicSubnet2RouteTable22886677": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet2/RouteTable"
+   }
+  },
+  "NetworkingVpcPublicSubnet2RouteTableAssociation2D4CEA06": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPublicSubnet2RouteTable22886677"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPublicSubnet2Subnet9D9E5AFB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "NetworkingVpcPublicSubnet2DefaultRouteDF98F60F": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "NetworkingVpcIGW21218DAB"
+    },
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPublicSubnet2RouteTable22886677"
+    }
+   },
+   "DependsOn": [
+    "NetworkingVpcVPCGW12E561D8"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "NetworkingVpcPrivateSubnet1Subnet717BCE48": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1a",
+    "CidrBlock": "10.100.4.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet1/Subnet"
+   }
+  },
+  "NetworkingVpcPrivateSubnet1RouteTable69CC9A73": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet1/RouteTable"
+   }
+  },
+  "NetworkingVpcPrivateSubnet1RouteTableAssociation761725EA": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPrivateSubnet1RouteTable69CC9A73"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPrivateSubnet1Subnet717BCE48"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet1/RouteTableAssociation"
+   }
+  },
+  "NetworkingVpcPrivateSubnet1DefaultRouteDE58E6A0": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "NetworkingVpcPublicSubnet1NATGateway70EEEC07"
+    },
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPrivateSubnet1RouteTable69CC9A73"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet1/DefaultRoute"
+   }
+  },
+  "NetworkingVpcPrivateSubnet2Subnet4313381B": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1c",
+    "CidrBlock": "10.100.8.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet2/Subnet"
+   }
+  },
+  "NetworkingVpcPrivateSubnet2RouteTableAE92CE40": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet2/RouteTable"
+   }
+  },
+  "NetworkingVpcPrivateSubnet2RouteTableAssociation9EFBB61D": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPrivateSubnet2RouteTableAE92CE40"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPrivateSubnet2Subnet4313381B"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet2/RouteTableAssociation"
+   }
+  },
+  "NetworkingVpcPrivateSubnet2DefaultRoute5BF16047": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "NetworkingVpcPublicSubnet1NATGateway70EEEC07"
+    },
+    "RouteTableId": {
+     "Ref": "NetworkingVpcPrivateSubnet2RouteTableAE92CE40"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/PrivateSubnet2/DefaultRoute"
+   }
+  },
+  "NetworkingVpcProtectedSubnet1SubnetF97DE33B": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1a",
+    "CidrBlock": "10.100.12.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Protected"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet1/Subnet"
+   }
+  },
+  "NetworkingVpcProtectedSubnet1RouteTable2C1558E9": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet1/RouteTable"
+   }
+  },
+  "NetworkingVpcProtectedSubnet1RouteTableAssociation011790AB": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "NetworkingVpcProtectedSubnet1RouteTable2C1558E9"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet1/RouteTableAssociation"
+   }
+  },
+  "NetworkingVpcProtectedSubnet2SubnetE110C692": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1c",
+    "CidrBlock": "10.100.16.0/22",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Protected"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet2/Subnet"
+   }
+  },
+  "NetworkingVpcProtectedSubnet2RouteTableA434E57C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet2/RouteTable"
+   }
+  },
+  "NetworkingVpcProtectedSubnet2RouteTableAssociation01AFDB7E": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "NetworkingVpcProtectedSubnet2RouteTableA434E57C"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcProtectedSubnet2SubnetE110C692"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/ProtectedSubnet2/RouteTableAssociation"
+   }
+  },
+  "NetworkingVpcIGW21218DAB": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/IGW"
+   }
+  },
+  "NetworkingVpcVPCGW12E561D8": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "NetworkingVpcIGW21218DAB"
+    },
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/VPCGW"
+   }
+  },
+  "NetworkingVpcFlowLogsFlowLog7DF32A67": {
+   "Type": "AWS::EC2::FlowLog",
+   "Properties": {
+    "LogDestination": {
+     "Fn::GetAtt": [
+      "NetworkingFlowLogBucket33187957",
+      "Arn"
+     ]
+    },
+    "LogDestinationType": "s3",
+    "ResourceId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    },
+    "ResourceType": "VPC",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc/FlowLogs"
+     }
+    ],
+    "TrafficType": "ALL"
+   },
+   "DependsOn": [
+    "NetworkingFlowLogBucketPolicy1EE356A6"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/FlowLogs/FlowLog"
+   }
+  },
+  "NetworkingVpcS3GWEndpointA935E1AA": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "NetworkingVpcPrivateSubnet1RouteTable69CC9A73"
+     },
+     {
+      "Ref": "NetworkingVpcPrivateSubnet2RouteTableAE92CE40"
+     },
+     {
+      "Ref": "NetworkingVpcProtectedSubnet1RouteTable2C1558E9"
+     },
+     {
+      "Ref": "NetworkingVpcProtectedSubnet2RouteTableA434E57C"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".s3"
+      ]
+     ]
+    },
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/S3GWEndpoint/Resource"
+   }
+  },
+  "NetworkingVpcSsmEndpointSecurityGroup897B24DC": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Networking/Vpc/SsmEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "NetworkingVpc6B5E6F44",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "NetworkingVpc6B5E6F44",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/SsmEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "NetworkingVpcSsmEndpoint054488E3": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "NetworkingVpcSsmEndpointSecurityGroup897B24DC",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-northeast-1.ssm",
+    "SubnetIds": [
+     {
+      "Ref": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+     },
+     {
+      "Ref": "NetworkingVpcProtectedSubnet2SubnetE110C692"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/SsmEndpoint/Resource"
+   }
+  },
+  "NetworkingVpcSsmMessagesEndpointSecurityGroup4F815FEB": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Networking/Vpc/SsmMessagesEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "NetworkingVpc6B5E6F44",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "NetworkingVpc6B5E6F44",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/SsmMessagesEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "NetworkingVpcSsmMessagesEndpointDA21F821": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "NetworkingVpcSsmMessagesEndpointSecurityGroup4F815FEB",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-northeast-1.ssmmessages",
+    "SubnetIds": [
+     {
+      "Ref": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+     },
+     {
+      "Ref": "NetworkingVpcProtectedSubnet2SubnetE110C692"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/SsmMessagesEndpoint/Resource"
+   }
+  },
+  "NetworkingVpcEc2EndpointSecurityGroup28494A31": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Networking/Vpc/Ec2Endpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "NetworkingVpc6B5E6F44",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "NetworkingVpc6B5E6F44",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/Ec2Endpoint/SecurityGroup/Resource"
+   }
+  },
+  "NetworkingVpcEc2EndpointCDE9BE0C": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "NetworkingVpcEc2EndpointSecurityGroup28494A31",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-northeast-1.ec2",
+    "SubnetIds": [
+     {
+      "Ref": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+     },
+     {
+      "Ref": "NetworkingVpcProtectedSubnet2SubnetE110C692"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/Ec2Endpoint/Resource"
+   }
+  },
+  "NetworkingVpcEc2MessagesEndpointSecurityGroupA9FD1F29": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Networking/Vpc/Ec2MessagesEndpoint/SecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "NetworkingVpc6B5E6F44",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "NetworkingVpc6B5E6F44",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/Vpc"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/Ec2MessagesEndpoint/SecurityGroup/Resource"
+   }
+  },
+  "NetworkingVpcEc2MessagesEndpointD64BDA68": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "NetworkingVpcEc2MessagesEndpointSecurityGroupA9FD1F29",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.ap-northeast-1.ec2messages",
+    "SubnetIds": [
+     {
+      "Ref": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+     },
+     {
+      "Ref": "NetworkingVpcProtectedSubnet2SubnetE110C692"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Vpc/Ec2MessagesEndpoint/Resource"
+   }
+  },
+  "NetworkingKey5DCEF7CD": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "Description": "BLEA Guest Sample: CMK for Ec2App VPC Flow Logs",
+    "EnableKeyRotation": true,
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::739275479148:root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "kms:Encrypt*",
+        "kms:Decrypt*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:Describe*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+       },
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Key/Resource"
+   }
+  },
+  "NetworkingKeyAlias2BF09FC0": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/DevBLEAEc2AppNetworkingD87AB721",
+    "TargetKeyId": {
+     "Fn::GetAtt": [
+      "NetworkingKey5DCEF7CD",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/Key/Alias/Resource"
+   }
+  },
+  "NetworkingFlowLogBucket33187957": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "AccessControl": "Private",
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "KMSMasterKeyID": {
+         "Fn::GetAtt": [
+          "NetworkingKey5DCEF7CD",
+          "Arn"
+         ]
+        },
+        "SSEAlgorithm": "aws:kms"
+       }
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/FlowLogBucket/Resource"
+   }
+  },
+  "NetworkingFlowLogBucketPolicy1EE356A6": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "NetworkingFlowLogBucket33187957"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "NetworkingFlowLogBucket33187957",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "NetworkingFlowLogBucket33187957",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/FlowLogBucket/Policy/Resource"
+   }
+  },
+  "NetworkingPublicNacl8F0D44A5": {
+   "Type": "AWS::EC2::NetworkAcl",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/PublicNacl"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PublicNacl/Resource"
+   }
+  },
+  "NetworkingPublicNaclDefaultAssociationDevBLEAEc2AppNetworkingVpcPublicSubnet109F200B211B5AB43": {
+   "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+   "Properties": {
+    "NetworkAclId": {
+     "Ref": "NetworkingPublicNacl8F0D44A5"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPublicSubnet1Subnet918289EE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PublicNacl/DefaultAssociationDevBLEAEc2AppNetworkingVpcPublicSubnet109F200B2/Resource"
+   }
+  },
+  "NetworkingPublicNaclDefaultAssociationDevBLEAEc2AppNetworkingVpcPublicSubnet24591B590BD988215": {
+   "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+   "Properties": {
+    "NetworkAclId": {
+     "Ref": "NetworkingPublicNacl8F0D44A5"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPublicSubnet2Subnet9D9E5AFB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PublicNacl/DefaultAssociationDevBLEAEc2AppNetworkingVpcPublicSubnet24591B590/Resource"
+   }
+  },
+  "NetworkingPublicNaclPublicEgress927B5E86": {
+   "Type": "AWS::EC2::NetworkAclEntry",
+   "Properties": {
+    "CidrBlock": "0.0.0.0/0",
+    "Egress": true,
+    "NetworkAclId": {
+     "Ref": "NetworkingPublicNacl8F0D44A5"
+    },
+    "Protocol": -1,
+    "RuleAction": "allow",
+    "RuleNumber": 100
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PublicNacl/PublicEgress/Resource"
+   }
+  },
+  "NetworkingPublicNaclPublicIngressAC30352B": {
+   "Type": "AWS::EC2::NetworkAclEntry",
+   "Properties": {
+    "CidrBlock": "0.0.0.0/0",
+    "Egress": false,
+    "NetworkAclId": {
+     "Ref": "NetworkingPublicNacl8F0D44A5"
+    },
+    "Protocol": -1,
+    "RuleAction": "allow",
+    "RuleNumber": 100
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PublicNacl/PublicIngress/Resource"
+   }
+  },
+  "NetworkingPrivateNacl8E602059": {
+   "Type": "AWS::EC2::NetworkAcl",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Dev-BLEAEc2App/Networking/PrivateNacl"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PrivateNacl/Resource"
+   }
+  },
+  "NetworkingPrivateNaclDefaultAssociationDevBLEAEc2AppNetworkingVpcPrivateSubnet15B31922B8E6227D5": {
+   "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+   "Properties": {
+    "NetworkAclId": {
+     "Ref": "NetworkingPrivateNacl8E602059"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPrivateSubnet1Subnet717BCE48"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PrivateNacl/DefaultAssociationDevBLEAEc2AppNetworkingVpcPrivateSubnet15B31922B/Resource"
+   }
+  },
+  "NetworkingPrivateNaclDefaultAssociationDevBLEAEc2AppNetworkingVpcPrivateSubnet239B35D27D643660A": {
+   "Type": "AWS::EC2::SubnetNetworkAclAssociation",
+   "Properties": {
+    "NetworkAclId": {
+     "Ref": "NetworkingPrivateNacl8E602059"
+    },
+    "SubnetId": {
+     "Ref": "NetworkingVpcPrivateSubnet2Subnet4313381B"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PrivateNacl/DefaultAssociationDevBLEAEc2AppNetworkingVpcPrivateSubnet239B35D27/Resource"
+   }
+  },
+  "NetworkingPrivateNaclPrivateEgress8D7BEE42": {
+   "Type": "AWS::EC2::NetworkAclEntry",
+   "Properties": {
+    "CidrBlock": "0.0.0.0/0",
+    "Egress": true,
+    "NetworkAclId": {
+     "Ref": "NetworkingPrivateNacl8E602059"
+    },
+    "Protocol": -1,
+    "RuleAction": "allow",
+    "RuleNumber": 100
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PrivateNacl/PrivateEgress/Resource"
+   }
+  },
+  "NetworkingPrivateNaclPrivateIngressA5CFFFD6": {
+   "Type": "AWS::EC2::NetworkAclEntry",
+   "Properties": {
+    "CidrBlock": "0.0.0.0/0",
+    "Egress": false,
+    "NetworkAclId": {
+     "Ref": "NetworkingPrivateNacl8E602059"
+    },
+    "Protocol": -1,
+    "RuleAction": "allow",
+    "RuleNumber": 120
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Networking/PrivateNacl/PrivateIngress/Resource"
+   }
+  },
+  "Ec2AppAlbSg4F64FD2A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Ec2App/AlbSg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "from 0.0.0.0/0:ALL PORTS",
+      "FromPort": 0,
+      "IpProtocol": "tcp",
+      "ToPort": 65535
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AlbSg/Resource"
+   }
+  },
+  "Ec2AppAlbSgtoDevBLEAEc2AppAppSgB5966D8D80E8567116": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "DestinationSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Ec2AppAppSgF34C625B",
+      "GroupId"
+     ]
+    },
+    "FromPort": 80,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Ec2AppAlbSg4F64FD2A",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 80
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AlbSg/to DevBLEAEc2AppAppSgB5966D8D:80"
+   }
+  },
+  "Ec2AppAppSgF34C625B": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Ec2App/AppSg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "from 0.0.0.0/0:ALL PORTS",
+      "FromPort": 0,
+      "IpProtocol": "tcp",
+      "ToPort": 65535
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppSg/Resource"
+   }
+  },
+  "Ec2AppAppSgfromDevBLEAEc2AppAlbSgB1E49274805D7F9651": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from DevBLEAEc2AppAlbSgB1E49274:80",
+    "FromPort": 80,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Ec2AppAppSgF34C625B",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Ec2AppAlbSg4F64FD2A",
+      "GroupId"
+     ]
+    },
+    "ToPort": 80
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppSg/from DevBLEAEc2AppAlbSgB1E49274:80"
+   }
+  },
+  "Ec2AppAppSgfromDevBLEAEc2AppAlbSgB1E4927454322AE97083": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "from DevBLEAEc2AppAlbSgB1E49274:5432",
+    "FromPort": 5432,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "Ec2AppAppSgF34C625B",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "Ec2AppAlbSg4F64FD2A",
+      "GroupId"
+     ]
+    },
+    "ToPort": 5432
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppSg/from DevBLEAEc2AppAlbSgB1E49274:5432"
+   }
+  },
+  "Ec2AppDbSg5052B1F1": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/Ec2App/DbSg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "255.255.255.255/32",
+      "Description": "Disallow all traffic",
+      "FromPort": 252,
+      "IpProtocol": "icmp",
+      "ToPort": 86
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/DbSg/Resource"
+   }
+  },
+  "Ec2AppAlb7DEFB31D": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     },
+     {
+      "Key": "access_logs.s3.enabled",
+      "Value": "true"
+     },
+     {
+      "Key": "access_logs.s3.bucket",
+      "Value": {
+       "Ref": "Ec2AppAlbLogBucket1DE66F6A"
+      }
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "Ec2AppAlbSg4F64FD2A",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Ref": "NetworkingVpcPublicSubnet1Subnet918289EE"
+     },
+     {
+      "Ref": "NetworkingVpcPublicSubnet2Subnet9D9E5AFB"
+     }
+    ],
+    "Type": "application"
+   },
+   "DependsOn": [
+    "NetworkingVpcPublicSubnet1DefaultRoute80C01FA6",
+    "NetworkingVpcPublicSubnet1RouteTableAssociationD13830EA",
+    "NetworkingVpcPublicSubnet2DefaultRouteDF98F60F",
+    "NetworkingVpcPublicSubnet2RouteTableAssociation2D4CEA06"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/Alb/Resource"
+   }
+  },
+  "Ec2AppAlbAlbListenerD30090D8": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "Ec2AppAlbAlbListenerAppAsgTargetGroup308E1E51"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "Ec2AppAlb7DEFB31D"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/Alb/AlbListener/Resource"
+   }
+  },
+  "Ec2AppAlbAlbListenerAppAsgTargetGroup308E1E51": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "Port": 80,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "deregistration_delay.timeout_seconds",
+      "Value": "30"
+     },
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "instance",
+    "Targets": [
+     {
+      "Id": {
+       "Ref": "Ec2AppAppInstance1455355A"
+      },
+      "Port": 80
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/Alb/AlbListener/AppAsgTargetGroup/Resource"
+   }
+  },
+  "Ec2AppAlbLogBucket1DE66F6A": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "AccessControl": "Private",
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AlbLogBucket/Resource"
+   }
+  },
+  "Ec2AppAlbLogBucketPolicy6C6759B4": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "Ec2AppAlbLogBucket1DE66F6A"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "Ec2AppAlbLogBucket1DE66F6A",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "Ec2AppAlbLogBucket1DE66F6A",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "s3:PutObject",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::582318560864:root"
+          ]
+         ]
+        }
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "Ec2AppAlbLogBucket1DE66F6A",
+            "Arn"
+           ]
+          },
+          "/AWSLogs/739275479148/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "s3:PutObject",
+       "Condition": {
+        "StringEquals": {
+         "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "Ec2AppAlbLogBucket1DE66F6A",
+            "Arn"
+           ]
+          },
+          "/AWSLogs/739275479148/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": "s3:GetBucketAcl",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "Ec2AppAlbLogBucket1DE66F6A",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AlbLogBucket/Policy/Resource"
+   }
+  },
+  "Ec2AppSsmInstanceRole98A9FB18": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+    ],
+    "Path": "/"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/SsmInstanceRole/Resource"
+   }
+  },
+  "Ec2AppAppInstanceInstanceProfileA4F0D336": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "Ec2AppSsmInstanceRole98A9FB18"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppInstance/InstanceProfile"
+   }
+  },
+  "Ec2AppAppInstance1455355A": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1a",
+    "BlockDeviceMappings": [
+     {
+      "DeviceName": "/dev/xvda",
+      "Ebs": {
+       "Encrypted": true,
+       "VolumeSize": 10
+      }
+     }
+    ],
+    "IamInstanceProfile": {
+     "Ref": "Ec2AppAppInstanceInstanceProfileA4F0D336"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t2.micro",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "Ec2AppAppSgF34C625B",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Ref": "NetworkingVpcPrivateSubnet1Subnet717BCE48"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "AppServer"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nsudo yum -y install httpd\nsudo systemctl enable httpd\nsudo systemctl start httpd\necho \"<h1>Hello from $(hostname)</h1>\" > /var/www/html/index.html\nchown apache.apache /var/www/html/index.html"
+    }
+   },
+   "DependsOn": [
+    "Ec2AppSsmInstanceRole98A9FB18"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppInstance/Resource"
+   }
+  },
+  "Ec2AppAppAsgInstanceProfile6555344A": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "Ec2AppSsmInstanceRole98A9FB18"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppAsg/InstanceProfile"
+   }
+  },
+  "Ec2AppAppAsgLaunchConfig7E072488": {
+   "Type": "AWS::AutoScaling::LaunchConfiguration",
+   "Properties": {
+    "BlockDeviceMappings": [
+     {
+      "DeviceName": "/dev/xvda",
+      "Ebs": {
+       "Encrypted": true,
+       "VolumeSize": 10
+      }
+     }
+    ],
+    "IamInstanceProfile": {
+     "Ref": "Ec2AppAppAsgInstanceProfile6555344A"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t2.micro",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "Ec2AppAppSgF34C625B",
+       "GroupId"
+      ]
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nsudo yum -y install httpd\nsudo systemctl enable httpd\nsudo systemctl start httpd\necho \"<h1>Hello from $(hostname)</h1>\" > /var/www/html/index.html\nchown apache.apache /var/www/html/index.html"
+    }
+   },
+   "DependsOn": [
+    "Ec2AppSsmInstanceRole98A9FB18"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppAsg/LaunchConfig"
+   }
+  },
+  "Ec2AppAppAsgASGA1C2034A": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "HealthCheckGracePeriod": 60,
+    "HealthCheckType": "ELB",
+    "LaunchConfigurationName": {
+     "Ref": "Ec2AppAppAsgLaunchConfig7E072488"
+    },
+    "MaxSize": "1",
+    "MinSize": "1",
+    "Tags": [
+     {
+      "Key": "Name",
+      "PropagateAtLaunch": true,
+      "Value": "AppServer"
+     }
+    ],
+    "TargetGroupARNs": [
+     {
+      "Ref": "Ec2AppAlbAlbListenerAppAsgTargetGroup308E1E51"
+     }
+    ],
+    "VPCZoneIdentifier": [
+     {
+      "Ref": "NetworkingVpcPrivateSubnet1Subnet717BCE48"
+     },
+     {
+      "Ref": "NetworkingVpcPrivateSubnet2Subnet4313381B"
+     }
+    ]
+   },
+   "UpdatePolicy": {
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppAsg/ASG"
+   }
+  },
+  "Ec2AppAppAsgScalingPolicykeepSpareCPUE940C04E": {
+   "Type": "AWS::AutoScaling::ScalingPolicy",
+   "Properties": {
+    "AutoScalingGroupName": {
+     "Ref": "Ec2AppAppAsgASGA1C2034A"
+    },
+    "PolicyType": "TargetTrackingScaling",
+    "TargetTrackingConfiguration": {
+     "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ASGAverageCPUUtilization"
+     },
+     "TargetValue": 50
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/AppAsg/ScalingPolicykeepSpareCPU/Resource"
+   }
+  },
+  "Ec2AppPostgresInstanceSubnetGroup3BB6BAF5": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for PostgresInstance database",
+    "SubnetIds": [
+     {
+      "Ref": "NetworkingVpcPrivateSubnet1Subnet717BCE48"
+     },
+     {
+      "Ref": "NetworkingVpcPrivateSubnet2Subnet4313381B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/PostgresInstance/SubnetGroup/Default"
+   }
+  },
+  "Ec2AppPostgresInstanceSecurityGroup85ECF94A": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for PostgresInstance database",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/PostgresInstance/SecurityGroup/Resource"
+   }
+  },
+  "DevBLEAEc2AppPostgresInstanceSecret36D65A8D3fdaad7efa858a3daf9490cf0a702aeb": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Generated by the CDK for stack: ",
+       {
+        "Ref": "AWS::StackName"
+       }
+      ]
+     ]
+    },
+    "GenerateSecretString": {
+     "ExcludeCharacters": " %+~`#$&*()|[]{}:;<>?!'/@\"\\",
+     "GenerateStringKey": "password",
+     "PasswordLength": 30,
+     "SecretStringTemplate": "{\"username\":\"postgres\"}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/PostgresInstance/Secret/Resource"
+   }
+  },
+  "Ec2AppPostgresInstanceSecretAttachmentE1970E9E": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "DevBLEAEc2AppPostgresInstanceSecret36D65A8D3fdaad7efa858a3daf9490cf0a702aeb"
+    },
+    "TargetId": {
+     "Ref": "Ec2AppPostgresInstance16CE166B"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/PostgresInstance/Secret/Attachment/Resource"
+   }
+  },
+  "Ec2AppPostgresInstance16CE166B": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "100",
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t2.micro",
+    "DBSubnetGroupName": {
+     "Ref": "Ec2AppPostgresInstanceSubnetGroup3BB6BAF5"
+    },
+    "Engine": "postgres",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "DevBLEAEc2AppPostgresInstanceSecret36D65A8D3fdaad7efa858a3daf9490cf0a702aeb"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": "postgres",
+    "PubliclyAccessible": false,
+    "StorageType": "gp2",
+    "VPCSecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "Ec2AppPostgresInstanceSecurityGroup85ECF94A",
+       "GroupId"
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Snapshot",
+   "DeletionPolicy": "Snapshot",
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/Ec2App/PostgresInstance/Resource"
+   }
+  },
+  "InvestigationInstanceInvInstanceSgB92E484E": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Dev-BLEAEc2App/InvestigationInstance/InvInstanceSg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "NetworkingVpc6B5E6F44"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/InvestigationInstance/InvInstanceSg/Resource"
+   }
+  },
+  "InvestigationInstanceSsmInstanceRole95F6BCCB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+     "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+    ],
+    "Path": "/"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/InvestigationInstance/SsmInstanceRole/Resource"
+   }
+  },
+  "InvestigationInstanceInstanceProfileAF68C034": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "InvestigationInstanceSsmInstanceRole95F6BCCB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/InvestigationInstance/InvestigationInstance/InstanceProfile"
+   }
+  },
+  "InvestigationInstance2E4D52A0": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "ap-northeast-1a",
+    "BlockDeviceMappings": [
+     {
+      "DeviceName": "/dev/xvda",
+      "Ebs": {
+       "Encrypted": true,
+       "VolumeSize": 10
+      }
+     }
+    ],
+    "IamInstanceProfile": {
+     "Ref": "InvestigationInstanceInstanceProfileAF68C034"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t2.micro",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "InvestigationInstanceInvInstanceSgB92E484E",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Ref": "NetworkingVpcProtectedSubnet1SubnetF97DE33B"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "Investigation"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash\nsudo yum -y install mariadb"
+    }
+   },
+   "DependsOn": [
+    "InvestigationInstanceSsmInstanceRole95F6BCCB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/InvestigationInstance/InvestigationInstance/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31Sy47bMAz8lr0rapKivTuPLoIGCyMJci1omfFqLUuGRMUIDP97Ycuv7AJ74sxwRFGk1nz1a8WXL1C5hUjzhZIJr88EImdQuX91Xjhe/8UH2950GyIlwbWkAw1Dseb1tRStdI23LPaJkuLsE43UahM6GU94gUThpE9a5JwREkgaPZpbsD/EbXgDegXCCh4stvIOhFPhgya0GkdD6KRnERGI9wI1sT/KVEeTtfkB9qZrKfY6LY3U1J8eaVf8BgLnnjMKbyU9Xq3xZfeaJ+ENqTI2j4TqWp9Y6HkSPj36u/Sk7jXZx3PhUXrqY59ZdO6LfNBBP2hHoAWGEQbcMPeT1xsv8jDaHoUQGyXFY5IDbxgqcCSFMpAmoEALqbP7mtdRWSopuvaPBtJNl0PbFnjic590hLr3DHiWv4DNkMaxz2jDJBS8PpnwvYY4PCy25iYVNgw8GSdASZ3xOvJkzoGMNY/gtXjfGn2Tmbfjbr5Yw90XCyKXOutT04iehIbZ1PF6BwQJOBwnHxY+Xr3bzIXBfUZhwzZ2m9meOtUVoCFDy+uw5dYYQmhv9vtHw+dM07ATOuNt+AoxWCiQwg6GRMO0SZF/uB/39ZKvfvPly4eTcmG9JlkgP4X4H2GSrS9NBAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Dev-BLEAEc2App/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

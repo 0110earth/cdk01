@@ -1,0 +1,20 @@
+{
+  "version": "36.0.0",
+  "files": {
+    "52ca9b8ea0a6cb34c80620cf12a3684f9d59969182d8c915f343454b3a8c02a9": {
+      "source": {
+        "path": "FoundationWebApp.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "739275479148-ap-northeast-1": {
+          "bucketName": "cdk-hnb659fds-assets-739275479148-ap-northeast-1",
+          "objectKey": "52ca9b8ea0a6cb34c80620cf12a3684f9d59969182d8c915f343454b3a8c02a9.json",
+          "region": "ap-northeast-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::739275479148:role/cdk-hnb659fds-file-publishing-role-739275479148-ap-northeast-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
